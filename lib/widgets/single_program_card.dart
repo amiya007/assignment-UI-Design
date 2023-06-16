@@ -32,7 +32,7 @@ class SingleProgramCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    programModel.type.toUpperCase(),
+                    programModel.category.toUpperCase(),
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: Colors.blue,

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+const String programApiUrl =
+    'https://632017e19f82827dcf24a655.mockapi.io/api/programs';
+const String lessonApiUrl =
+    'https://632017e19f82827dcf24a655.mockapi.io/api/lessons';
+
 ButtonStyle textButtonWithImageStyle = ButtonStyle(
   shape: const MaterialStatePropertyAll(StadiumBorder()),
   visualDensity: VisualDensity.compact, // Adjust the button density

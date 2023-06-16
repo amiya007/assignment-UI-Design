@@ -15,7 +15,7 @@ class SingleLessonCard extends StatelessWidget {
     Size mq = MediaQuery.of(context).size;
     return Card(
       child: SizedBox(
-        width: mq.width * 0.63,
+        width: mq.width * 0.6,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -32,7 +32,7 @@ class SingleLessonCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lessonModel.type.toUpperCase(),
+                    lessonModel.category.toUpperCase(),
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       color: Colors.blue,
@@ -43,7 +43,7 @@ class SingleLessonCard extends StatelessWidget {
                   Text(
                     lessonModel.title,
                     style: const TextStyle(
-                        fontSize: 17, fontWeight: FontWeight.bold),
+                        fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 3),
                   Row(
@@ -53,10 +53,9 @@ class SingleLessonCard extends StatelessWidget {
                         '${lessonModel.lessonTime} min',
                         style: commonHeadingText.copyWith(fontSize: 13),
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.lock_outline),
-                      ),
+                      Icon(lessonModel.isLocked
+                          ? Icons.lock_outlined
+                          : Icons.lock_open_outlined)
                     ],
                   ),
                 ],

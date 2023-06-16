@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../global.dart';
@@ -8,9 +11,105 @@ import '../widgets/single_event_card.dart';
 import '../widgets/single_lesson_card.dart';
 import '../widgets/single_program_card.dart';
 import '../widgets/hompage_button_container.dart';
+import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<ProgramModel> programData = [];
+  List<LessonModel> lessonData = [];
+
+  getProgramData() async {
+    // Make the API request
+    http.Response response = await http.get(Uri.parse(programApiUrl));
+
+    // Check if the request was successful (status code 200)
+    if (response.statusCode == 200) {
+      // Parse the response body
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      List<dynamic> items = responseData['items'];
+
+      // Create a list to store ProgramModel objects
+      List<ProgramModel> fetchedData = [];
+
+      // Iterate through the response data and create ProgramModel objects
+      for (var item in items) {
+        String title = item['name'];
+        String category = item['category'];
+        int totalLesson = int.parse(item['lesson'].toString());
+
+        ProgramModel program = ProgramModel(
+          title: title,
+          category: category,
+          totalLesson: totalLesson,
+        );
+
+        fetchedData.add(program);
+      }
+      setState(() {
+        programData = fetchedData;
+      });
+      // Print the programData list
+    } else {
+      log('Failed to fetch data. Status code: ${response.statusCode}');
+    }
+  }
+
+  getLessonData() async {
+    // Make the API request
+    http.Response response = await http.get(Uri.parse(lessonApiUrl));
+
+    // Check if the request was successful (status code 200)
+    if (response.statusCode == 200) {
+      // Parse the response body
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      List<dynamic> items = responseData['items'];
+
+      // Create a list to store ProgramModel objects
+      List<LessonModel> fetchedData = [];
+
+      // Iterate through the response data and create ProgramModel objects
+      for (var item in items) {
+        String title = item['name'];
+        String category = item['category'];
+        int lessonTime = int.parse(item['duration'].toString());
+        bool isLocked = item['locked'];
+
+        LessonModel program = LessonModel(
+          title: title,
+          category: category,
+          lessonTime: lessonTime,
+          isLocked: isLocked,
+        );
+
+        fetchedData.add(program);
+      }
+
+      setState(() {
+        lessonData = fetchedData;
+      });
+
+      // Print the programData list
+    } else {
+      log('Failed to fetch data. Status code: ${response.statusCode}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      getProgramData();
+      getLessonData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +230,7 @@ class HomePage extends StatelessWidget {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: programDummyData
+                    children: programData
                         .map((e) => SingleProgramCard(programModel: e))
                         .toList(),
                   ),
@@ -234,7 +333,7 @@ class HomePage extends StatelessWidget {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: lessonDummyData
+                    children: lessonData
                         .map((e) => SingleLessonCard(lessonModel: e))
                         .toList(),
                   ),
